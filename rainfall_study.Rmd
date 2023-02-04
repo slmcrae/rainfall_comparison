@@ -1,0 +1,209 @@
+---
+title: "Amateur Enthusiast vs. BOM"
+author: "SMcRae"
+date: "2023-01-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+KM, a resident of Sunbury, Victoria, has been recording the amount of rainfall collected in his backyard rain gauge with enthusiastic precision for more than a decade. This investigation is to determine if there is any difference between KM’s records and the data available for the same area from the Bureau of Meteorology (BOM).
+
+
+# Problem Statement
+
+Three years of KM’s rainfall data, from January 2014 to December 2016,were compared with data for the same region and time period from the website of the Bureau of Meteorology. A paired t-test was used to compare monthly rainfall totals as well as the daily rainfall totals.
+
+
+# Dataset 1
+
+The Sunbury data records from KM were handwritten onto calendars. Four months were excluded from the study due to missing data. These months were February, March, June and July of 2014. The handwritten data was transcribed onto excel spreadsheets. Daily and monthly totals were included.
+
+The data was recorded at a location described by the following details: Latitude: 37.57° S Longitude: 144.74° E Elevation: approx 200 m. The rain gauge has markings up to 33mm but holds much more in an unmarked extension on top. If rainfall exceeded 33mm, the collection was poured into another cylinder in order to take the measurement. The gauge is set up in an open space just beyond the back door of a residential house. Measurements are recorded between 7am and 9am each morning and reflect precipitation occurring in the previous 24 hours. 
+
+# Dataset 2
+
+Open source data was obtained from the Bureau of Meteorology website at http://www.bom.gov.au/climate/data/index.shtml. The station chosen for comparison, station number 086282 at Melbourne Airport, was selected because it was the closest to Sunbury with the most complete data set.The website data is appears in the form of a calendar with columns representing months and individual cells representing days. This data was copied and pasted directly into excel.
+
+The Bureau of Meteorology data was obtained from the weather station located at the Melbourne Airport site. The location description is as follows: Latitude: 37.67° S Longitude: 144.83° E Elevation: 113 m. Measurements were recorded at 9am each morning and reflect precipitation occurring in the previous 24 hours.
+
+## Data Overview
+
+A total of 32 months and 975 days were included in the study from January 1, 2014 to December 31, 2016. The years 2014, 2015 and 2016 were selected because KM had these records readily available. Four months were excluded because data was missing. These months were February, March, June and July of 2014.
+
+The two locations are 14.3km apart.
+
+In order to perform a t-test on the differences between the two sets of data, two columns were created, one for KM data and one for BOM data. Rows were equivalent to months on one worksheet and days on another. The difference (d) was calculated by subtracting the BOM observation from the KM observations: d=KM−BOM
+
+Rainfall is measured in millimetres (mm).
+
+## Packages and Files
+
+The following analysis was performed using R and Rstudio. Additional libraries required: readxl, dplyr, ggpubr, distributions3, and magrittr.
+
+The data was originally collated in "BOM_rainfall.xlsx". Monthly and daily differences were calculated and copied into 2 separate files: "monthly_differences.xlsx" and "daily_differences.xlsx" respectively. 
+
+The daily differences data was used to create a third dataset with the zero values removed: "Daily_cleaned2.csv"
+
+## Descriptive Statistics and Visualizations
+
+### Summary of Monthly Differences
+
+```{r, include=FALSE}
+library(readxl)
+library(dplyr)
+library(car)
+library(magrittr)
+monthly <- read_excel("C:/Users/SMcRae/udacity-git-course/masters_projects/rainfall_comparison/monthly_differences.xlsx")
+daily   <- read_excel("C:/Users/SMcRae/udacity-git-course/masters_projects/rainfall_comparison/daily_differences.xlsx")
+daily_cleaned <- read.csv("C:/Users/SMcRae/udacity-git-course/masters_projects/rainfall_comparison/Daily_cleaned2.csv")
+View(monthly)
+View(daily)
+
+```
+
+```{r, echo=FALSE}
+monthly %>% summarise(Min = min(monthly$diff),
+                      Q1 = quantile(monthly$diff,probs = .25),
+                      Median = median(monthly$diff),
+                      Q3 = quantile(monthly$diff,probs = .75),
+                      Max = max(monthly$diff),
+                      Mean = mean(monthly$diff),
+                      IQR = IQR(monthly$diff),
+                      STD = sd(monthly$diff),
+                      n = n())
+```
+### Histogram of Monthly Differences
+
+```{r, echo=FALSE}
+monthly$diff %>% hist(col="lightgreen", breaks=20,
+                      xlab="Difference in Monthly Totals (mm)",
+                      main="Histogram of Monthly Differences: KM vs. BOM Data")
+```
+### Summary of Daily Differences
+
+```{r, echo=FALSE}
+daily %>% summarise(Min = min(daily$diff),
+                    Q1 = quantile(daily$diff,probs = .25),
+                    Median = median(daily$diff),
+                    Q3 = quantile(daily$diff,probs = .75),
+                    Max = max(daily$diff),
+                    Mean = mean(daily$diff),
+                    IQR = IQR(daily$diff),
+                    STD = sd(daily$diff),
+                    n = n())
+
+```
+### Histogram of Daily Differences
+
+```{r, echo=FALSE}
+daily$diff %>% hist(col="lightblue", breaks=20,
+                      xlab="Difference in Daily Totals (mm)",
+                      main="Histogram of Daily Differences: KM vs. BOM Data")
+```
+The difference in daily totals histogram reveals a dataset with extreme values and a very high number of data points equal to or very close to zero.  A Q-Q plot demonstrates that this dataset is not normally distributed.
+
+## Hypothesis Testing
+
+The null hypothesis is the mean of the differences between the two datasets is equal to zero:
+      H0 : μd = 0
+
+The alternative hypothesis is the mean of the differences is not equal to zero:
+      HA : μd ≠ 0
+
+A t-test assumes that the data is normally distributed. The Q-Q plot for the monthly data shows the data points falling along the reference line and within the shaded area. It can be assumed that the monthly data is normally distributed with a significance level of 0.05.
+
+
+```{r, echo=FALSE}
+monthly$diff %>% qqPlot(dist='norm')
+```
+
+A Q-Q plot for the daily rainfall data reveals a dataset with many extreme values that does not appear normally distributed. A standard t-test can not be used to analyse this data. A one-sample Wilcoxon test will be utilized instead.
+
+```{r, echo=FALSE}
+daily$diff %>% qqPlot(dist='norm')
+```
+
+
+### Analysis of Monthly Data (t-test)
+
+A t-test on the difference between the monthly totals of KM and BOM data had 31 degrees of freedom, a p-value of 0.456 and a 95% CI[-3.57,7.76]. As the p-value was greater than 0.05 and the 95% CI includes zero, the analysis fails to reject the null hypothesis. There is no statistically significant difference between KM and BOM monthly rainfall totals.
+
+```{r, echo=FALSE}
+t.test(monthly$diff, mu = 0, alternative = "two.sided")
+```
+
+### Analysis of Daily Data (One-sample Wilcoxon Test)
+
+The one-sample Wilcoxon Test is a non-parametric test that does not assume any specific distribution of data. The null hypothesis for this test is that the median difference is equal to zero. 
+
+The resulting p-value is greater than 0.05 so the null hypothesis can not be rejected.
+This confirms the difference between the daily rainfall data from KM and BOM is zero with a confidence level of 95%.
+
+```{r}
+wilcox.test(daily$diff, mu = 0, alternative = "two.sided", conf.level=0.95)
+```
+# Discussion
+
+Inspection of the daily rainfall data from the two datasets revealed possible problems that may affect the statistical analysis. 
+
+Firstly, there were a number of occasions where a large amount of rainfall was recorded with a day difference between the Melbourne Airport(BOM) and Sunbury(KM). For example; KM recorded 48 mm on December 29, 2016. The BOM data recorded nothing on the 29th but 62.8 mm on the following day, December 30, 2016. This appears to be the result of recording rainfall from the same storm system at different times. The difference calculated on these days was -62.8 (the minimum in the dataset) for December 30th and +48 (the maximum in the dataset) for December 29th. 
+
+This difference creates similar extremes on either side of zero, and therefore contributes to a mean close to zero. The time delay of these observations does not shift the 95% confidence interval away from zero. The null hypothesis, that the mean difference between the datasets is zero, is therefore supported by this time delay effect - even though it could be argued that the time delay creates a real difference between the datasets and should detract from the null hypothesis, not support it.
+
+The second possible problem is that according to the Bureau of Meteorology, there were 669 days out of the 976 included in this study where no rainfall was recorded. This represents 68.5% of the BOM dataset. There were a similar number of days without rainfall in the KM dataset. Zero rainfall is a valid observation. However, if there are many more zeroes recorded than observations greater than zero, the differences between the observations greater than zero may be obscured by the sheer number of observations where both KM=0 and BOM=0. Analyzing the difference between two datasets with so many zeroes could result in a false confirmation of the null hypothesis: that is the mean difference in rainfall observations is zero. 
+
+In order to explore this, the zero records from the daily rainfall dataset were removed to create a new dataset: "Daily_cleaned2.csv". An excel formula was created to highlight the instances when KM>0, BOM>0 and (KM>0)-(BOM>0)=0. There were 3 such cases. In order to save time, these observations were removed along with the other observations where both KM=0 and BOM=0 as part of the same process. This resulted in a loss of approximately 0.6% of rainfall data. It was assumed that this loss would not impact the data analysis.
+
+A Q-Q plot and a density plot of this data reveals many extreme values and a lack of normality, similar to the original daily rainfall dataset. The one-sample Wilcoxon test is required for this dataset, also.
+
+### Q-Q and Density Plots: Daily Differences (without zero values)
+
+```{r, echo=FALSE}
+daily_cleaned$diff %>% qqPlot(dist='norm')
+```
+
+
+```{r}
+d <- density(daily_cleaned$diff) # returns the density data
+plot(d, frame = FALSE, col = "blue",main = "Density Plot: Daily (without zero values)")
+```
+### Summary of Daily Differences (without zero values)
+
+```{r, echo=FALSE}
+daily_cleaned %>% summarise(Min = min(daily_cleaned$diff),
+                            Q1 = quantile(daily_cleaned$diff,probs = .25),
+                            Median = median(daily_cleaned$diff),
+                            Q3 = quantile(daily_cleaned$diff,probs = .75),
+                            Max = max(daily_cleaned$diff),
+                            Mean = mean(daily_cleaned$diff),
+                            IQR = IQR(daily_cleaned$diff),
+                            STD = sd(daily_cleaned$diff),
+                            n = n())
+```
+### Analysis of Daily Data without zeroes (One-sample Wilcoxon Test)
+
+```{r, echo=FALSE}
+wilcox.test(daily_cleaned$diff, mu = 0, alternative = "two.sided")
+```
+# Analysis of Daily Data (without zero values)
+
+The original daily data has a mean of 0.07. After the zero values were removed from this dataset, the mean increased to 0.14. The interquartile range has increased from 0.2 in the original to 3.8 in the cleaned dataset.  The standard deviation also increased from 5.5 (original) to 7.8 (cleaned). Only zero values were removed so the range remains the same with a minimum of -62.8mm and a maximum of 48mm.
+
+The one-sample Wilcoxon test on the cleaned data produced a p-value of 0.24. As this value is greater than 0.05, the null hypothesis can not be rejected. 
+
+This confirms the mean difference of the cleaned version of the daily rainfall data is zero with a confidence level of 95%.
+
+
+# Conclusion
+
+There is no statistically significant difference between the rainfall data collected by KM and the data collected by the Bureau of Meteorology at a weather station located 14.3km away. This is true for both the monthly and daily totals. 
+
+If BOM needed another source of accurate rainfall data for the area, due to technical failure or a similiar issue, KM would be able to provide a substitute.
+
+
+
