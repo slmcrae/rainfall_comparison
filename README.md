@@ -1,6 +1,6 @@
 # Amateur enthusiast vs. Bureau of Meteorology
 
-## _A_ _Comparison_ _of_ _Rainfall_ _Data_
+## A Comparison of Rainfall Data
 
 
 ### Overview
@@ -20,5 +20,6 @@ KM’s records and the data available for the same area from the Bureau of Meteo
 ### Photo credit (Github pages website)
 Cloud photo: https://sowegalive.com/2015/09/11/state-weather-expert-says-georgia-saw-lots-of-rain-seasonal-temperatures-in-august/<br>
 
-
-* _SMcRae_ _22/10/2017_
+<br>
+<br>
+_SMcRae_ _22/10/2017_
