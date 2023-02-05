@@ -14,12 +14,13 @@ KM’s records and the data available for the same area from the Bureau of Meteo
 
 ### Data
 
-[html link](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.html)<br>
-[R Markdown file](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.Rmd)<br>
+[Final Report as html here](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.html)<br>
+[Final Report as R Markdown file here](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.Rmd)<br>
 
 ### Photo credit (Github pages website)
 Cloud photo: https://sowegalive.com/2015/09/11/state-weather-expert-says-georgia-saw-lots-of-rain-seasonal-temperatures-in-august/<br>
 
 <br>
 <br>
-_SMcRae_ _22/10/2017_
+
+_SMcRae_ _22/10/2017_<br>
