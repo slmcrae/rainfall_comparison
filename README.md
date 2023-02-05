@@ -1,6 +1,6 @@
 # Amateur enthusiast vs. Bureau of Meteorology
 
-##_A_ _Comparison_ _of_ _Rainfall_ _Data_
+## _A_ _Comparison_ _of_ _Rainfall_ _Data_
 
 
 ### Overview
@@ -14,11 +14,11 @@ KM’s records and the data available for the same area from the Bureau of Meteo
 
 ### Data
 
-[html link](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.html)
-[R Markdown file](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.Rmd)
+[html link](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.html)<br>
+[R Markdown file](https://github.com/slmcrae/rainfall_comparison/blob/master/rainfall_study.Rmd)<br>
 
 ### Photo credit (Github pages website)
-Cloud photo: https://sowegalive.com/2015/09/11/state-weather-expert-says-georgia-saw-lots-of-rain-seasonal-temperatures-in-august/
+Cloud photo: https://sowegalive.com/2015/09/11/state-weather-expert-says-georgia-saw-lots-of-rain-seasonal-temperatures-in-august/<br>
 
 
 * _SMcRae_ _22/10/2017_
