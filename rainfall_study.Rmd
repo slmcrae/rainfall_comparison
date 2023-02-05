@@ -41,7 +41,7 @@ In order to perform a t-test on the differences between the two sets of data, tw
 
 Rainfall is measured in millimetres (mm).
 
-### Packages and Files
+## Packages and Files
 
 The following analysis was performed using R and Rstudio. Additional libraries required: readxl, dplyr, ggpubr, distributions3, and magrittr.
 
@@ -49,7 +49,8 @@ The data was originally collated in "BOM_rainfall.xlsx". Monthly and daily diffe
 
 The daily differences data was used to create a third dataset with the zero values removed: "Daily_cleaned2.csv"
 
-### Descriptive Statistics and Visualizations
+## Descriptive Statistics and Visualizations
+
 
 #### Summary of Monthly Differences
 
@@ -58,9 +59,9 @@ library(readxl)
 library(dplyr)
 library(car)
 library(magrittr)
-monthly <- read_excel("C:/Users/SMcRae/udacity-git-course/masters_projects/rainfall_comparison/monthly_differences.xlsx")
-daily   <- read_excel("C:/Users/SMcRae/udacity-git-course/masters_projects/rainfall_comparison/daily_differences.xlsx")
-daily_cleaned <- read.csv("C:/Users/SMcRae/udacity-git-course/masters_projects/rainfall_comparison/Daily_cleaned2.csv")
+monthly <- read_excel("monthly_differences.xlsx")
+daily   <- read_excel("daily_differences.xlsx")
+daily_cleaned <- read.csv("Daily_cleaned2.csv")
 View(monthly)
 View(daily)
 
@@ -145,7 +146,7 @@ The one-sample Wilcoxon Test is a non-parametric test that does not assume any s
 The resulting p-value is greater than 0.05 so the null hypothesis can not be rejected.
 This confirms the difference between the daily rainfall data from KM and BOM is zero with a confidence level of 95%.
 
-```{r}
+```{r, echo=FALSE}
 wilcox.test(daily$diff, mu = 0, alternative = "two.sided", conf.level=0.95)
 ```
 ## Discussion
@@ -169,10 +170,11 @@ daily_cleaned$diff %>% qqPlot(dist='norm')
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 d <- density(daily_cleaned$diff) # returns the density data
 plot(d, frame = FALSE, col = "blue",main = "Density Plot: Daily (without zero values)")
 ```
+
 ### Summary of Daily Differences (without zero values)
 
 ```{r, echo=FALSE}
@@ -191,7 +193,7 @@ daily_cleaned %>% summarise(Min = min(daily_cleaned$diff),
 ```{r, echo=FALSE}
 wilcox.test(daily_cleaned$diff, mu = 0, alternative = "two.sided")
 ```
-## Analysis of Daily Data (without zero values)
+### Analysis of Daily Data (without zero values)
 
 The original daily data has a mean of 0.07. After the zero values were removed from this dataset, the mean increased to 0.14. The interquartile range has increased from 0.2 in the original to 3.8 in the cleaned dataset.  The standard deviation also increased from 5.5 (original) to 7.8 (cleaned). Only zero values were removed so the range remains the same with a minimum of -62.8mm and a maximum of 48mm.
 
