@@ -9,23 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introduction
+## Introduction
 
 KM, a resident of Sunbury, Victoria, has been recording the amount of rainfall collected in his backyard rain gauge with enthusiastic precision for more than a decade. This investigation is to determine if there is any difference between KM’s records and the data available for the same area from the Bureau of Meteorology (BOM).
 
 
-# Problem Statement
+## Problem Statement
 
 Three years of KM’s rainfall data, from January 2014 to December 2016,were compared with data for the same region and time period from the website of the Bureau of Meteorology. A paired t-test was used to compare monthly rainfall totals as well as the daily rainfall totals.
 
 
-# Dataset 1
+## Dataset 1: KM rain gauge recordings
 
 The Sunbury data records from KM were handwritten onto calendars. Four months were excluded from the study due to missing data. These months were February, March, June and July of 2014. The handwritten data was transcribed onto excel spreadsheets. Daily and monthly totals were included.
 
 The data was recorded at a location described by the following details: Latitude: 37.57° S Longitude: 144.74° E Elevation: approx 200 m. The rain gauge has markings up to 33mm but holds much more in an unmarked extension on top. If rainfall exceeded 33mm, the collection was poured into another cylinder in order to take the measurement. The gauge is set up in an open space just beyond the back door of a residential house. Measurements are recorded between 7am and 9am each morning and reflect precipitation occurring in the previous 24 hours. 
 
-# Dataset 2
+## Dataset 2: BOM weather station #086282
 
 Open source data was obtained from the Bureau of Meteorology website at http://www.bom.gov.au/climate/data/index.shtml. The station chosen for comparison, station number 086282 at Melbourne Airport, was selected because it was the closest to Sunbury with the most complete data set.The website data is appears in the form of a calendar with columns representing months and individual cells representing days. This data was copied and pasted directly into excel.
 
@@ -41,7 +41,7 @@ In order to perform a t-test on the differences between the two sets of data, tw
 
 Rainfall is measured in millimetres (mm).
 
-## Packages and Files
+### Packages and Files
 
 The following analysis was performed using R and Rstudio. Additional libraries required: readxl, dplyr, ggpubr, distributions3, and magrittr.
 
@@ -49,9 +49,9 @@ The data was originally collated in "BOM_rainfall.xlsx". Monthly and daily diffe
 
 The daily differences data was used to create a third dataset with the zero values removed: "Daily_cleaned2.csv"
 
-## Descriptive Statistics and Visualizations
+### Descriptive Statistics and Visualizations
 
-### Summary of Monthly Differences
+#### Summary of Monthly Differences
 
 ```{r, include=FALSE}
 library(readxl)
@@ -77,14 +77,15 @@ monthly %>% summarise(Min = min(monthly$diff),
                       STD = sd(monthly$diff),
                       n = n())
 ```
-### Histogram of Monthly Differences
+
 
 ```{r, echo=FALSE}
 monthly$diff %>% hist(col="lightgreen", breaks=20,
                       xlab="Difference in Monthly Totals (mm)",
                       main="Histogram of Monthly Differences: KM vs. BOM Data")
 ```
-### Summary of Daily Differences
+
+#### Summary of Daily Differences
 
 ```{r, echo=FALSE}
 daily %>% summarise(Min = min(daily$diff),
@@ -98,7 +99,7 @@ daily %>% summarise(Min = min(daily$diff),
                     n = n())
 
 ```
-### Histogram of Daily Differences
+
 
 ```{r, echo=FALSE}
 daily$diff %>% hist(col="lightblue", breaks=20,
@@ -147,7 +148,7 @@ This confirms the difference between the daily rainfall data from KM and BOM is 
 ```{r}
 wilcox.test(daily$diff, mu = 0, alternative = "two.sided", conf.level=0.95)
 ```
-# Discussion
+## Discussion
 
 Inspection of the daily rainfall data from the two datasets revealed possible problems that may affect the statistical analysis. 
 
@@ -190,7 +191,7 @@ daily_cleaned %>% summarise(Min = min(daily_cleaned$diff),
 ```{r, echo=FALSE}
 wilcox.test(daily_cleaned$diff, mu = 0, alternative = "two.sided")
 ```
-# Analysis of Daily Data (without zero values)
+## Analysis of Daily Data (without zero values)
 
 The original daily data has a mean of 0.07. After the zero values were removed from this dataset, the mean increased to 0.14. The interquartile range has increased from 0.2 in the original to 3.8 in the cleaned dataset.  The standard deviation also increased from 5.5 (original) to 7.8 (cleaned). Only zero values were removed so the range remains the same with a minimum of -62.8mm and a maximum of 48mm.
 
@@ -199,11 +200,11 @@ The one-sample Wilcoxon test on the cleaned data produced a p-value of 0.24. As 
 This confirms the mean difference of the cleaned version of the daily rainfall data is zero with a confidence level of 95%.
 
 
-# Conclusion
+## Conclusion
 
 There is no statistically significant difference between the rainfall data collected by KM and the data collected by the Bureau of Meteorology at a weather station located 14.3km away. This is true for both the monthly and daily totals. 
 
-If BOM needed another source of accurate rainfall data for the area, due to technical failure or a similiar issue, KM would be able to provide a substitute.
+If BOM needed another source of accurate rainfall data for the area, due to technical failure or similar issue, KM would be able to provide a substitute.
 
 
 
