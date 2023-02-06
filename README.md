@@ -24,7 +24,7 @@ HTML version of report rendered in browser using Github & BitBucket HTML Preview
 Created by Jerzy Glowacki 2019
 <br>
 
-### Photo Credit (Github pages website)
+_**Photo**_ _**Credit**_ _**(slmcrae.github.io)**_<br>
 Cloud photo: https://sowegalive.com/2015/09/11/state-weather-expert-says-georgia-saw-lots-of-rain-seasonal-temperatures-in-august/<br>
 <br>
 <br>
